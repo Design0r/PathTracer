@@ -4,6 +4,7 @@
 #include "Walnut/Image.h"
 #include "Walnut/Random.h"
 #include "Walnut/Timer.h"
+#include "../Renderer.h"
 
 using namespace Walnut;
 
@@ -38,17 +39,6 @@ public:
 		//ImGui::ShowDemoWindow();
 	}
 
-	static uint32_t ConvertToRGBA(const glm::vec4& color)
-	{
-		uint8_t r = (uint8_t)(color.r * 255.0f);
-		uint8_t g = (uint8_t)(color.g * 255.0f);
-		uint8_t b = (uint8_t)(color.b * 255.0f);
-		uint8_t a = (uint8_t)(color.a * 255.0f);
-
-		uint32_t result = (a << 24) | (b << 16) | (g << 8) | r;
-		return result;
-	}
-
 	void Render() {
 
 		Timer timer;
@@ -60,12 +50,22 @@ public:
 			m_ImageData = new uint32_t[m_ViewportWidth * m_ViewportHeight];
 		}
 
-		for (uint32_t i = 0; i < m_ViewportWidth * m_ViewportHeight; i++) 
+		int i = 0;
+		for (int w = 0; w < m_ViewportWidth; w++)
+		{
+			for (int h = 0; h < m_ViewportHeight; h++)
+			{
+				m_ImageData[i] = m_Renderer.Calculate(w, h, m_Samples);
+				i++;
+			}
+		}
+
+		/*for (uint32_t i = 0; i < m_ViewportWidth * m_ViewportHeight; i++) 
 		{
 			m_ImageData[i] = Random::UInt();
 			m_ImageData[i] |= 0xff000000;
-		}
-
+		}*/
+		
 		m_Image->SetData(m_ImageData);
 		m_LastRenderTime = timer.ElapsedMillis();
 	}
@@ -75,6 +75,8 @@ private:
 	uint32_t* m_ImageData = nullptr;
 	uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 	float m_LastRenderTime = 0.0f;
+	Renderer m_Renderer = Renderer();
+	int m_Samples = 0;
 };
 
 Walnut::Application* Walnut::CreateApplication(int argc, char** argv)
