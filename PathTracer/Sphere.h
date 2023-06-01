@@ -10,7 +10,7 @@ class Sphere
 public:
 	Sphere(glm::vec3 position, glm::vec4 color, float radius, float roughness, bool isEmitter, float intensity);
 
-	float Intersect(Ray &ray);
+	float Intersect(Ray ray);
 	glm::vec3 Normal(glm::vec3& point);
 
 	glm::vec3 m_Position{ 0.0f,0.0f,0.0f };

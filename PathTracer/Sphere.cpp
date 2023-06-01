@@ -10,7 +10,7 @@ Sphere::Sphere(glm::vec3 position, glm::vec4 color, float radius, float roughnes
 	m_Intensity = intensity;
 }
 
-float Sphere::Intersect(Ray &ray) 
+float Sphere::Intersect(Ray ray) 
 {
 	glm::vec3 v = ray.Origin - m_Position;
 	float a = glm::dot(ray.Direction, ray.Direction);

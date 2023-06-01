@@ -5,6 +5,7 @@
 #include "Walnut/Random.h"
 #include "Walnut/Timer.h"
 #include "../Renderer.h"
+#include "../Scene.h"
 
 using namespace Walnut;
 
@@ -35,13 +36,17 @@ public:
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-		Render();
 		//ImGui::ShowDemoWindow();
 	}
 
 	void Render() {
 
 		Timer timer;
+		m_Renderer.m_Camera = cam;
+		m_Renderer.m_RenderWidth = m_ViewportWidth;
+		m_Renderer.m_RenderHeight = m_ViewportHeight;
+		scene.addSphere(sphere);
+		m_Renderer.m_Scene = scene;
 
 		if (!m_Image || m_ViewportWidth != m_Image->GetWidth() || m_ViewportHeight != m_Image->GetHeight()) 
 		{
@@ -75,6 +80,9 @@ private:
 	uint32_t* m_ImageData = nullptr;
 	uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 	float m_LastRenderTime = 0.0f;
+	Camera cam = Camera{ glm::vec3{0.0f, -2.0f, 12.5f}, 160 };
+	Scene scene = Scene{};
+	Sphere sphere = Sphere{ glm::vec3{-5.339, -1.948, -16.014}, glm::vec4{0.5f, 0.5f, 0.5f, 1.0f}, 6, 0.0f, false, 0.0f };
 	Renderer m_Renderer = Renderer();
 	int m_Samples = 0;
 };

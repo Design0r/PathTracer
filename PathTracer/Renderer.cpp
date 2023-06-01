@@ -34,7 +34,7 @@ glm::vec4 Renderer::ComputeSample(uint32_t x, uint32_t y)
 
 }
 
-glm::vec4 Renderer::Trace(Ray &ray, int currentDepth)
+glm::vec4 Renderer::Trace(Ray ray, int currentDepth)
 {
 	float hitDistance = 5000.0f;
 	Sphere *hitObject = nullptr;
