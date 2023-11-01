@@ -10,14 +10,15 @@ uint32_t Renderer::Calculate(uint32_t x, uint32_t y, int Samples)
 
 glm::vec4 Renderer::ComputeSample(uint32_t x, uint32_t y)
 {
-	float aspect = (float)x / (float)y;
+	float aspect = (float)m_RenderWidth / (float)m_RenderHeight;
+
 	float zdir = 1.0f / glm::tan(m_Camera.fov);
 
 	glm::vec4 color{ 0.0f, 0.0f, 0.0f, 1.0f };
 	for (int i = 0; i < m_Msaa; i++) 
 	{
 		float subX = (i % 2) / 2.0f;
-		float subY = (i / 2) / 2.0f;
+		float subY = (i / static_cast<float>(2)) / 2.0f;
 
 		float subPixelX = x + subX;
 		float subPixelY = y + subY;
@@ -40,11 +41,12 @@ glm::vec4 Renderer::Trace(Ray ray, int currentDepth)
 	Sphere *hitObject = nullptr;
 
 
-	for (int i = 0; i <= m_Scene.Spheres.size(); i++)
+	for (int i = 0; i < m_Scene.Spheres.size(); i++)
 	{
 		float intersect = m_Scene.Spheres[i].Intersect(ray);
 
-		if (-1.0f < intersect || intersect < hitDistance)
+		if (intersect > 0.0f && intersect < hitDistance)
+
 		{
 			hitDistance = intersect;
 			hitObject = &m_Scene.Spheres[i];
@@ -55,7 +57,7 @@ glm::vec4 Renderer::Trace(Ray ray, int currentDepth)
 	if (hitObject->m_IsEmitter) return hitObject->m_Color * hitObject->m_Intensity;
 	if (currentDepth >= m_MaxDepth) return glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f };
 
-	glm::vec3 hitPoint = ray.Origin * (ray.Direction * hitDistance * 0.998f);
+	glm::vec3 hitPoint = ray.Origin + ray.Direction * hitDistance;
 	glm::vec3 normal = hitObject->Normal(hitPoint);
 	
 	Ray reflectionRay = Ray{ hitPoint, ReflectVector(ray.Direction, normal, hitObject->m_Roughness) };

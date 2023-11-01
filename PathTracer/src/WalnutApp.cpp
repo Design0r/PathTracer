@@ -60,6 +60,7 @@ public:
 		{
 			for (int h = 0; h < m_ViewportHeight; h++)
 			{
+
 				m_ImageData[i] = m_Renderer.Calculate(w, h, m_Samples);
 				i++;
 			}
